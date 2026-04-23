@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bosch K/KE-Jetronic Cross-Reference — Mercedes-Benz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ef;
+  --panel:#ffffff;
+  --ink:#141413;
+  --ink-2:#4a4944;
+  --ink-3:#7a776f;
+  --rule:#2622201a;
+  --rule-strong:#26222033;
+  --accent:#b54a00;        /* industrial orange — Bosch-adjacent */
+  --accent-ink:#fff;
+  --warn:#b58900;          /* one-year-only */
+  --warn-bg:#fff3c4;
+  --vac:#2f5d3a;
+  --vac-bg:#e3efe6;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--ink);
+  font-size:14px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- masthead ---------- */
+.masthead{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:24px;
+  padding:22px 28px 16px;
+  border-bottom:2px solid var(--ink);
+  background:var(--panel);
+}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{width:64px;height:40px;color:var(--ink);flex-shrink:0}
+h1{
+  font-size:20px;font-weight:700;margin:0;letter-spacing:-0.01em;
+  font-family:var(--mono);
+}
+.sub{margin:2px 0 0;color:var(--ink-2);font-size:13px}
+.actions{display:flex;gap:8px}
+
+.btn{
+  font:500 13px/1 var(--sans);
+  padding:8px 14px;border-radius:2px;border:1px solid var(--ink);
+  background:var(--panel);color:var(--ink);cursor:pointer;
+  transition:transform .06s ease, background .15s ease;
+}
+.btn:hover{background:var(--ink);color:var(--panel)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{background:#8f3a00;border-color:#8f3a00}
+.btn.ghost{border-color:var(--rule-strong);color:var(--ink-2)}
+
+/* ---------- controls ---------- */
+.controls{
+  padding:14px 28px;
+  background:var(--panel);
+  border-bottom:1px solid var(--rule-strong);
+  position:sticky;top:0;z-index:10;
+}
+.searchbar{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+#q{
+  flex:1;
+  font:500 15px/1.2 var(--mono);
+  padding:10px 14px;
+  border:1.5px solid var(--ink);
+  border-radius:2px;
+  background:#fff;
+  color:var(--ink);
+  outline:none;
+}
+#q:focus{border-color:var(--accent);box-shadow:0 0 0 3px #b54a0022}
+.count{font:500 12px/1 var(--mono);color:var(--ink-3);white-space:nowrap}
+
+.filters{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.filters label{
+  font:500 12px/1 var(--sans);color:var(--ink-2);
+  display:inline-flex;align-items:center;gap:6px;
+}
+.filters select{
+  font:500 12px/1 var(--mono);
+  padding:6px 8px;border:1px solid var(--rule-strong);border-radius:2px;
+  background:#fff;color:var(--ink);
+}
+.filters .check{cursor:pointer;user-select:none}
+.filters .check input{accent-color:var(--accent)}
+
+/* ---------- table ---------- */
+main{padding:0 28px 40px}
+.xref{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+  background:var(--panel);
+  margin-top:16px;
+  font-variant-numeric:tabular-nums;
+}
+.xref th,.xref td{
+  padding:8px 10px;
+  text-align:left;
+  vertical-align:top;
+  border-bottom:1px solid var(--rule);
+}
+.xref thead th{
+  position:sticky;top:110px;z-index:5;
+  background:#ebe8e0;
+  border-bottom:1.5px solid var(--ink);
+  font:600 11px/1.2 var(--sans);
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+  color:var(--ink-2);
+  cursor:pointer;
+  white-space:nowrap;
+}
+.xref thead th:hover{background:#ddd9ce;color:var(--ink)}
+.xref thead th.sorted-asc::after{content:" ▲";color:var(--accent)}
+.xref thead th.sorted-desc::after{content:" ▼";color:var(--accent)}
+
+.xref tbody tr{cursor:pointer}
+.xref tbody tr:hover{background:#faf7ef}
+.xref tbody tr.open{background:#f0eadb}
+.xref tbody tr.open:hover{background:#ece4d0}
+
+.pn{font-family:var(--mono);font-weight:600;white-space:nowrap}
+.type-tag{
+  display:inline-block;
+  font:600 10px/1 var(--mono);
+  padding:4px 6px;
+  border-radius:2px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+}
+.type-WUR{background:#ffedd8;color:#8f3a00}
+.type-FD{background:#dde7f5;color:#1e4a7a}
+.type-AFM{background:#e3e3e3;color:#444}
+.type-TVV{background:#f0d9e5;color:#7a1e4a}
+
+.badge{
+  display:inline-block;
+  font:600 10px/1 var(--mono);
+  padding:3px 5px;border-radius:2px;
+  letter-spacing:0.04em;
+}
+.badge.vac{background:var(--vac-bg);color:var(--vac)}
+.badge.oyo{background:var(--warn-bg);color:#7a5a00}
+
+.mono{font-family:var(--mono)}
+.models{max-width:320px}
+.notes-cell{color:var(--ink-2);font-size:12px}
+
+/* expand row */
+.detail td{
+  background:#fbf8f1;
+  border-bottom:1.5px solid var(--rule-strong);
+  padding:16px 20px;
+}
+.detail dl{
+  display:grid;grid-template-columns:max-content 1fr;
+  gap:6px 16px;margin:0 0 12px;
+  font-size:13px;
+}
+.detail dt{font-weight:600;color:var(--ink-2)}
+.detail dd{margin:0;font-family:var(--mono)}
+.detail .notes{
+  font-family:var(--sans);
+  padding:10px 12px;background:#fff;border-left:3px solid var(--accent);
+  margin:8px 0;color:var(--ink);
+}
+.detail .sources a{color:var(--accent);text-decoration:none;margin-right:8px;font-size:12px}
+.detail .sources a:hover{text-decoration:underline}
+
+/* ---------- sourcing (main-table compact cell) ---------- */
+.sourcing-cell{white-space:nowrap}
+.sourcing{
+  display:inline-flex;align-items:baseline;gap:8px;
+  line-height:1.2;
+}
+.src-price{
+  font-weight:700;color:var(--ink);
+  font-size:13px;
+}
+.src-days{
+  font:500 10px/1 var(--mono);
+  color:var(--ink-2);
+  padding:2px 5px;
+  background:#ebe8e0;
+  border-radius:2px;
+  white-space:nowrap;
+}
+.ebay-empty{color:var(--ink-3);font-family:var(--mono);font-size:12px}
+.sold-cell{white-space:nowrap;font-size:12px;color:var(--ink-2)}
+.ebay-link{
+  font:600 10px/1 var(--mono);
+  color:var(--accent);
+  text-decoration:none;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.ebay-link:hover{text-decoration:underline}
+
+/* ---------- eBay panel (inside detail row) ---------- */
+.ebay-panel{
+  margin:12px 0 4px;
+  padding:12px 14px;
+  background:#fff;
+  border:1px solid var(--rule-strong);
+  border-left:3px solid #e53238;   /* eBay red accent */
+  border-radius:2px;
+}
+.ebay-head{
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  margin-bottom:10px;
+  padding-bottom:8px;
+  border-bottom:1px dashed var(--rule);
+}
+.ebay-label{
+  font:600 11px/1 var(--sans);
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--ink-2);
+}
+.ebay-grid{
+  display:grid;
+  grid-template-columns:repeat(6, 1fr);
+  gap:10px 14px;
+  margin-bottom:10px;
+}
+.ebay-stat{
+  display:flex;flex-direction:column;gap:3px;
+  padding:6px 8px;
+  background:#faf8f3;
+  border-radius:2px;
+}
+.ebay-stat .k{
+  font:500 10px/1.1 var(--sans);
+  color:var(--ink-3);
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+}
+.ebay-stat .v{
+  font-weight:600;
+  font-size:13px;
+  color:var(--ink);
+}
+.ebay-stat.emph{background:#fff3ea;border:1px solid #f0c9a8}
+.ebay-stat.emph .v{color:var(--accent);font-size:15px}
+.ebay-row{
+  font-size:12px;color:var(--ink-2);
+  margin:6px 0;
+}
+.ebay-row .k{font-weight:600;color:var(--ink)}
+.ebay-notes{
+  font-size:13px;
+  color:var(--ink);
+  padding:8px 10px;
+  background:#fbf8f1;
+  border-left:2px solid var(--accent);
+  margin-top:8px;
+  line-height:1.5;
+}
+
+@media (max-width:1100px){
+  .ebay-grid{grid-template-columns:repeat(3, 1fr)}
+}
+@media (max-width:600px){
+  .ebay-grid{grid-template-columns:repeat(2, 1fr)}
+  .sourcing{flex-wrap:wrap;gap:4px}
+}
+
+/* highlight */
+mark{background:#fff3b0;color:inherit;padding:0 1px;border-radius:1px}
+
+.empty{
+  text-align:center;padding:40px;color:var(--ink-3);font-style:italic;
+}
+
+/* ---------- footer ---------- */
+.foot{
+  border-top:2px solid var(--ink);
+  padding:20px 28px 40px;
+  background:var(--panel);
+  display:grid;gap:14px;
+  grid-template-columns:1fr 1fr;
+  font-size:13px;color:var(--ink-2);
+}
+.foot .fine{grid-column:1/-1;font-size:11px;color:var(--ink-3);border-top:1px solid var(--rule);padding-top:12px}
+.foot code{font-family:var(--mono);background:#ebe8e0;padding:1px 4px;border-radius:2px;font-size:12px}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .masthead{flex-direction:column;align-items:flex-start;gap:12px}
+  .filters{gap:10px}
+  main{padding:0 12px 40px}
+  .controls{padding:12px}
+  .xref thead th{top:180px}
+  .xref{font-size:12px}
+  .xref th,.xref td{padding:6px 6px}
+  .models{max-width:200px}
+  .foot{grid-template-columns:1fr}
+}
+
+/* ---------- print ---------- */
+@media print{
+  body{background:#fff;color:#000;font-size:10pt}
+  .masthead{border-bottom:1pt solid #000;padding:8pt 0}
+  .actions,.controls{display:none}
+  .xref{font-size:9pt}
+  .xref thead th{position:static;background:#eee;color:#000;border-bottom:1pt solid #000}
+  .xref tbody tr{page-break-inside:avoid}
+  .detail{display:none}
+  .foot{border-top:1pt solid #000;color:#000}
+  a{color:#000;text-decoration:none}
+}
+
+a.btn{text-decoration:none;display:inline-block}
+</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23111'/%3E%3Ctext x='50%25' y='58%25' font-family='monospace' font-size='18' font-weight='700' fill='%23f0c000' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<header class="masthead">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 64 40" aria-label="Bosch WUR/FD cross-reference logo">
+      <rect x="0" y="0" width="64" height="40" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="0" y1="20" x2="64" y2="20" stroke="currentColor" stroke-width="1"/>
+      <circle cx="14" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="14" cy="28" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <rect x="26" y="8" width="32" height="8" fill="currentColor"/>
+      <rect x="26" y="24" width="32" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+    <div>
+      <h1>K/KE-Jetronic Cross-Reference</h1>
+      <p class="sub">Bosch WUR & fuel-distributor numbers · Mercedes-Benz applications</p>
+    </div>
+  </div>
+  <div class="actions">
+    <a id="backBtn" class="btn" href="https://kjet-tech.com">← Back</a>
+    <button id="downloadCsv" class="btn primary" type="button">Download CSV</button>
+    <button id="printBtn" class="btn" type="button">Print</button>
+  </div>
+</header>
+
+<section class="controls">
+  <div class="searchbar">
+    <input id="q" type="search" placeholder="Search part number, chassis, engine code, model, note&hellip;  (e.g. 0438140103, 380SL, M110, W126)" autocomplete="off" autofocus>
+    <span id="count" class="count"></span>
+  </div>
+  <div class="filters">
+    <label>Type
+      <select id="fType">
+        <option value="">All</option>
+        <option value="WUR">WUR</option>
+        <option value="FD">Fuel distributor</option>
+      </select>
+    </label>
+    <label>Engine
+      <select id="fEngine"><option value="">All</option></select>
+    </label>
+    <label>Chassis
+      <select id="fChassis"><option value="">All</option></select>
+    </label>
+    <button id="clear" class="btn ghost" type="button">Clear</button>
+  </div>
+</section>
+
+<main>
+  <table id="tbl" class="xref">
+    <thead>
+      <tr>
+        <th data-k="bosch_pn">Bosch P/N</th>
+        <th data-k="type">Type</th>
+        <th data-k="mb_chassis">Chassis</th>
+        <th data-k="mb_models">Mercedes models</th>
+        <th data-k="engine_code">Engine</th>
+        <th data-k="years">Years</th>
+        <th data-k="market">Mkt</th>
+        <th data-k="superseded_by">Superseded by</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <p id="empty" class="empty" hidden>No matches. Try a different search or clear filters.</p>
+</main>
+
+<footer class="foot">
+  <div>
+    <strong>How to use.</strong> Type any fragment — Bosch P/N (with or without spaces), a chassis (<code>W126</code>), an engine (<code>M110</code>), a model (<code>380SL</code>), or a note keyword (<code>double-diaphragm</code>, <code>Euro</code>, <code>US spec</code>). Filters stack. Click a column header to sort. Click any row to expand for full specs, sources.
+  </div>
+  <div>
+    <strong>CSV workflow.</strong> Click <em>Download CSV</em> to grab the current master table. Edit in Google Sheets or Excel, then drop the updated <code>data.csv</code> next to <code>index.html</code> — the page will reload it automatically next visit.
+  </div>
+  <div class="fine">
+    Data compiled from Bosch exchange catalogs, CIS-Jetronic &amp; K-Jet.biz repair-kit fitment tables, SpecialtAuto, AUTODOC OEM cross-refs, German SPOB / Mengenteiler listings, PeachParts &amp; Pelican forum threads, MercedesSource WUR evolution notes, and recent eBay sold-listing OEM confirmations. </div>
+</footer>
+
+<script>
+/* ------------------------------------------------------------------ *
+ * Bosch WUR / FD cross-reference — client-side search & filter
+ * Loads data.csv from same directory, so updating the CSV updates
+ * the site on next page load.
+ * ------------------------------------------------------------------ */
+
+const state = {
+  rows: [],
+  filtered: [],
+  sortKey: null,
+  sortDir: 1,
+  openRows: new Set(),
+};
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+
+/* --------------------------- CSV parse --------------------------- */
+function parseCSV(text) {
+  const rows = [];
+  let i = 0, field = "", row = [], inQ = false;
+  while (i < text.length) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+        inQ = false; i++; continue;
+      }
+      field += c; i++;
+    } else {
+      if (c === '"') { inQ = true; i++; continue; }
+      if (c === ",") { row.push(field); field = ""; i++; continue; }
+      if (c === "\r") { i++; continue; }
+      if (c === "\n") { row.push(field); rows.push(row); row = []; field = ""; i++; continue; }
+      field += c; i++;
+    }
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  const [head, ...body] = rows;
+  return body
+    .filter((r) => r.some((v) => v && v.trim()))
+    .map((r) => Object.fromEntries(head.map((h, idx) => [h.trim(), (r[idx] || "").trim()])));
+}
+
+/* --------------------------- helpers ----------------------------- */
+const normPn = (s) => (s || "").replace(/[\s-]/g, "").toLowerCase();
+const esc = (s) => (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function highlight(text, q) {
+  if (!q || !text) return esc(text || "");
+  const needle = q.trim();
+  if (!needle) return esc(text);
+  // build a case-insensitive regex, escaping regex chars
+  const r = new RegExp("(" + needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
+  return esc(text).replace(r, "<mark>$1</mark>");
+}
+
+function rowMatches(row, q, filters) {
+  // type
+  if (filters.type && row.type !== filters.type) return false;
+  if (filters.engine && !(row.engine_code || "").includes(filters.engine)) return false;
+  if (filters.chassis && !(row.mb_chassis || "").includes(filters.chassis)) return false;
+
+  if (!q) return true;
+  const needle = q.trim().toLowerCase();
+  if (!needle) return true;
+
+  // normalized PN search — so "0438140103" matches "0 438 140 103"
+  const pnNorm = normPn(row.bosch_pn) + " " + normPn(row.mb_oem) + " " + normPn(row.supersedes) + " " + normPn(row.superseded_by);
+  if (pnNorm.includes(normPn(needle))) return true;
+
+  const hay = [
+    row.bosch_pn, row.type, row.mb_oem, row.mb_chassis, row.mb_models,
+    row.engine_code, row.years, row.market, row.diaphragm_type, row.vacuum,
+    row.inverted_valve, row.one_year_only, row.supersedes, row.superseded_by,
+    row.notes, row.sources,
+  ].join(" ").toLowerCase();
+  return hay.includes(needle);
+}
+
+// Renders the compact sourcing cell for the main table.
+function renderSourcingCell(r) {
+  if (!hasEbayData(r)) {
+    // Empty — but only bother showing em-dash if row could reasonably have data
+    return `<span class="ebay-empty">\u2014</span>`;
+  }
+  const median = esc(r.ebay_sold_median_usd || "");
+  const low = esc(r.ebay_sold_low_usd || "");
+  const high = esc(r.ebay_sold_high_usd || "");
+  const days = esc(r.ebay_est_days_to_sell || "");
+  const count = esc(r.ebay_sold_count_90d || "");
+  const geo = esc(r.ebay_seller_geo || "");
+  const url = r.ebay_search_url || "";
+
+  const rangeAttr = (low || high)
+    ? `range ${low}\u2013${high} \u00b7 ${count} sold 90d \u00b7 ${geo}`
+    : `${count} sold 90d`;
+
+  const urlHtml = url
+    ? `<a class="ebay-link" href="${esc(url)}" target="_blank" rel="noopener" title="View sold listings on eBay" onclick="event.stopPropagation()">eBay \u2197</a>`
+    : "";
+
+  return `
+    <div class="sourcing" title="${esc(rangeAttr)}">
+      <span class="src-price mono">${median}</span>
+      ${days ? `<span class="src-days">${days}d</span>` : ""}
+      ${urlHtml}
+    </div>`;
+}
+
+// Renders the rich eBay panel inside the expanded detail row.
+function renderEbayPanel(r) {
+  if (!hasEbayData(r)) return "";
+  const low = esc(r.ebay_sold_low_usd || "n/a");
+  const med = esc(r.ebay_sold_median_usd || "n/a");
+  const high = esc(r.ebay_sold_high_usd || "n/a");
+  const count = esc(r.ebay_sold_count_90d || "—");
+  const days = esc(r.ebay_est_days_to_sell || "—");
+  const cond = esc(r.ebay_condition_split || "");
+  const geo = esc(r.ebay_seller_geo || "");
+  const notes = esc(r.ebay_sourcing_notes || "");
+  const url = r.ebay_search_url || "";
+
+  return `
+    <div class="ebay-panel">
+      <div class="ebay-head">
+        <span class="ebay-label">eBay sourcing · last ~90 days</span>
+        ${url ? `<a class="ebay-link" href="${esc(url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open sold listings ↗</a>` : ""}
+      </div>
+      <div class="ebay-grid">
+        <div class="ebay-stat"><span class="k">Low (core)</span><span class="v mono">${low}</span></div>
+        <div class="ebay-stat emph"><span class="k">Median</span><span class="v mono">${med}</span></div>
+        <div class="ebay-stat"><span class="k">High (rebuilt/NOS)</span><span class="v mono">${high}</span></div>
+        <div class="ebay-stat"><span class="k">Sold count</span><span class="v mono">${count}</span></div>
+        <div class="ebay-stat"><span class="k">Days to sell</span><span class="v mono">${days}</span></div>
+        <div class="ebay-stat"><span class="k">Seller geo</span><span class="v mono">${geo}</span></div>
+      </div>
+      ${cond ? `<div class="ebay-row"><span class="k">Condition mix:</span> <span class="v">${cond}</span></div>` : ""}
+      ${notes ? `<div class="ebay-notes">${notes}</div>` : ""}
+    </div>`;
+}
+
+/* --------------------------- render ------------------------------ */
+function render() {
+  const tbody = $("#tbody");
+  const q = $("#q").value;
+  const filters = {
+    type: $("#fType").value,
+    engine: $("#fEngine").value,
+    chassis: $("#fChassis").value,
+  };
+
+  let rows = state.rows.filter((r) => rowMatches(r, q, filters));
+
+  if (state.sortKey) {
+    const k = state.sortKey, dir = state.sortDir;
+    rows = [...rows].sort((a, b) => {
+      const va = (a[k] || "").toLowerCase();
+      const vb = (b[k] || "").toLowerCase();
+      if (va < vb) return -1 * dir;
+      if (va > vb) return 1 * dir;
+      return 0;
+    });
+  }
+
+  state.filtered = rows;
+  $("#count").textContent = `${rows.length} / ${state.rows.length}`;
+  $("#empty").hidden = rows.length > 0;
+
+  const html = rows.map((r, i) => {
+    const id = `r${state.rows.indexOf(r)}`;
+    const open = state.openRows.has(id);
+    const vacBadge = /yes/i.test(r.vacuum || "") ? '<span class="badge vac">VAC</span>' : "";
+    const oyoBadge = /yes/i.test(r.one_year_only || "") ? '<span class="badge oyo">1-YR</span>' : "";
+    const typeClass = `type-${r.type || ""}`;
+
+    const mainRow = `
+      <tr data-id="${id}" class="${open ? "open" : ""}">
+        <td class="pn">${highlight(r.bosch_pn, q)}</td>
+        <td><span class="type-tag ${typeClass}">${esc(r.type)}</span></td>
+        <td class="mono">${highlight(r.mb_chassis, q)}</td>
+        <td class="models">${highlight(r.mb_models, q)}</td>
+        <td class="mono">${highlight(r.engine_code, q)}</td>
+        <td class="mono">${esc(r.years)}</td>
+        <td class="mono">${esc(r.market)}</td>
+        <td class="mono">${highlight(r.superseded_by, q)}</td>
+        <td class="notes-cell">${highlight((r.notes || "").slice(0, 80) + (r.notes && r.notes.length > 80 ? "…" : ""), q)}</td>
+      </tr>`;
+
+    const detailRow = open ? renderDetail(r, id, q) : "";
+    return mainRow + detailRow;
+  }).join("");
+
+  tbody.innerHTML = html;
+
+  // attach row click handlers
+  $$("#tbody tr[data-id]").forEach((tr) => {
+    tr.addEventListener("click", () => {
+      const id = tr.dataset.id;
+      if (state.openRows.has(id)) state.openRows.delete(id);
+      else state.openRows.add(id);
+      render();
+    });
+  });
+}
+
+function renderDetail(r, id, q) {
+  const sources = (r.sources || "").trim();
+  // sources are markdown [Name](url) separated by ·
+  const sourcesHtml = sources
+    ? sources.split(/\s*·\s*/).map((s) => {
+        const m = s.match(/^\[([^\]]+)\]\(([^)]+)\)/);
+        if (m) return `<a href="${esc(m[2])}" target="_blank" rel="noopener">${esc(m[1])}</a>`;
+        return `<span>${esc(s)}</span>`;
+      }).join(" ")
+    : "";
+
+  return `
+    <tr class="detail">
+      <td colspan="9">
+        <dl>
+          ${r.mb_oem ? `<dt>Mercedes OEM</dt><dd>${highlight(r.mb_oem, q)}</dd>` : ""}
+          ${r.diaphragm_type ? `<dt>Diaphragm</dt><dd>${esc(r.diaphragm_type)}</dd>` : ""}
+          ${r.cold_cp_bar ? `<dt>Cold control pressure</dt><dd>${esc(r.cold_cp_bar)} bar</dd>` : ""}
+          ${r.supersedes ? `<dt>Supersedes</dt><dd>${highlight(r.supersedes, q)}</dd>` : ""}
+          ${r.superseded_by ? `<dt>Superseded by</dt><dd>${highlight(r.superseded_by, q)}</dd>` : ""}
+        </dl>
+        ${r.notes ? `<div class="notes">${highlight(r.notes, q)}</div>` : ""}
+        ${sourcesHtml ? `<div class="sources">${sourcesHtml}</div>` : ""}
+      </td>
+    </tr>`;
+}
+
+/* --------------------------- sorting ----------------------------- */
+function setupSort() {
+  $$("#tbl thead th[data-k]").forEach((th) => {
+    th.addEventListener("click", () => {
+      const k = th.dataset.k;
+      if (state.sortKey === k) state.sortDir *= -1;
+      else { state.sortKey = k; state.sortDir = 1; }
+      $$("#tbl thead th").forEach((x) => x.classList.remove("sorted-asc", "sorted-desc"));
+      th.classList.add(state.sortDir === 1 ? "sorted-asc" : "sorted-desc");
+      render();
+    });
+  });
+}
+
+/* --------------------------- filters ----------------------------- */
+function populateFilter(selId, key) {
+  const vals = new Set();
+  state.rows.forEach((r) => {
+    (r[key] || "")
+      .split(/[\/· ,]+/)
+      .map((v) => v.trim())
+      .filter((v) => v && v.length < 30 && /^[A-Za-z]/.test(v))
+      .forEach((v) => vals.add(v));
+  });
+  const sel = $(selId);
+  [...vals].sort().forEach((v) => {
+    const o = document.createElement("option");
+    o.value = v; o.textContent = v;
+    sel.appendChild(o);
+  });
+}
+
+/* --------------------------- CSV export -------------------------- */
+function downloadCurrentCsv() {
+  (function(){ const t = "bosch_pn,type,mb_oem,mb_chassis,mb_models,engine_code,years,market,diaphragm_type,vacuum,inverted_valve,one_year_only,supersedes,superseded_by,notes,sources\n0 438 140 010,WUR,,W123/W116/R107/C107,280 CE/280 SLC/450 SE/450 SEL/450 SL/450 SLC (Euro),M110/M117,1977-1978,Euro,Double,Yes,No,No,,,Euro-spec; uses double-diaphragm vacuum-enrichment design,[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [K-Jet.biz kit list](https://k-jet.biz/product/0-438-140-015-warm-up-regulator-single-vacuum-diaphragm-repair-kit/)\n0 438 140 015,WUR,000 070 05 62 / A0000700562,R107/C107/W116,450 SE/SEL/SL/SLC,M117,1976-1978,US,Single,Yes,No,No,,,Single-diaphragm vacuum WUR. Early intake-port location (large port on top). Commonly rebuilt with k-jet.biz single-diaphragm kit.,[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [K-Jet.biz](https://k-jet.biz/product/0-438-140-015-warm-up-regulator-single-vacuum-diaphragm-repair-kit/) \u00b7 [MB YouTube WUR evolution](https://www.youtube.com/watch?v=CA-FABwUK5c)\n0 438 140 030,WUR,000 070 10 62,W123,280E (6-cyl M110),M110,1977-1979,US,Single,Yes,No,No,,,USA 280E M110 DOHC. Single-diaphragm vacuum type.,[FuelInjectionProducts](https://www.fuelinjectionproducts.com/products/mercedes-new-warm-up-regulator-bosch-0438140030) \u00b7 [SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 031,WUR,,W123,280/280E variants,M110,varies,,Single,Yes,No,No,,,Variant of 030 run; verify against engine tag before fitting.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 056,WUR,,R107/W126/W116,350/380/450/500 (various US),M116/M117,1976-1985,US,Double,Yes,No,No,,,Long-run US V8 number covering many chassis/years. Double-diaphragm design.,[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [K-Jet.biz 056 exchange](https://k-jet.biz/product/0438140056-exchange-remanufactured-warm-up-regulator-price-inc-150-00-surcharge/)\n0 438 140 057,WUR,0000701662,W123/W116/R107/C107/W126/W460,280CE/280SLC/280SE/280SEL and G-Wagen Euro,M110,1976-1985,Euro,Double,Yes,No,No,,,Euro 6-cyl CIS. Wide compatibility across W116/W123/R107/W126/W460 Puch G.,[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [Classic Parts Finder](https://www.classic-parts-finder.com/en/car-parts/mercedes-benz/w123/engine/control-pressure-regulator-wur-m110-motor_6723)\n0 438 140 061,WUR,,R107/C107/W126,380 SE/SEL/SEC/SL \u00b7 450 SE/SEL/SEC/SL (Euro),M116/M117,1979-1985,Euro,Double,Yes,No,No,,0 438 140 145,Cross-referenced with 145 (German equivalent).,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 065,WUR,102 070 01 62 / 000 070 20 62,W123/W460/C123/S123,230E/230CE/230TE/G230 (4-cyl),M102,1980-1985,US,Single,No,No,No,,,M102 4-cyl. No vacuum input on this engine application. Also fits Puch G.,[AUTODOC](https://www.auto-doc.ie/bosch/682085) \u00b7 [MB YouTube signs of bad WUR](https://www.youtube.com/watch?v=6bjb_PveRXo)\n0 438 140 067,WUR,,W123/C123,280E/280CE (DOHC M110),M110,1980-1981,US,Double,Yes,No,Yes,,0 438 140 147,ONE/TWO-YEAR-ONLY fitment 80-81 only. German equivalent is 147. Often NLA new.,[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [EPS Parts](https://epsparts.com/products/1980-81-mercedes-280e-280ce-fuel-injection-warm-up-regulator-bosch-0-438-140-067)\n0 438 140 068,WUR,,R107/C107/W126,380 SE/SEL/SEC/SL/SLC \u00b7 450 SE/SEL/SLC \u00b7 500 SEC/SEL,M116/M117,1980-1984,US,Double,Yes,No,No,,0 438 140 148,German equivalent is 148. V8 US spec.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 101,WUR,,R107/W126,380 SE/SEL/SL \u00b7 500 (same) Euro,M116/M117,1980-1985,Euro,Double,Yes,No,No,,,Euro V8 application.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 103,WUR,110-070-00-62,W123/W116/R107,280E/280CE/280S/280SE/280SEL/280SL,M110,1976-1985,US,Double,Yes,No,No,,,\"Last-of-run M110 WUR \u2014 \"\"final version\"\". Vacuum port on back of intake (firewall side). Check that vacuum line is actually connected \u2014 commonly plugged.\",[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [PeachParts thread](http://www.peachparts.com/shopforum/tech-help/265952-problem-m110-988-warm-up-regulator-wur.html)\n0 438 140 145,WUR,116 070 02 62 / 117 070 00 62 / 000 070 19 62,R107/C107/W126,380 SE/SEL/SEC/SL \u00b7 450 SE/SEL/SEC/SL (Euro),M116/M117,1979-1985,Euro,Double,Yes,No,No,0 438 140 061,,German-market equivalent of 061.,[AUTODOC](https://www.autodoc.parts/bosch/682129) \u00b7 [SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 147,WUR,,W123/C123,280E/280CE (DOHC),M110,1980-1981,Euro,Double,Yes,No,Yes,,,German-market equivalent of 067. ONE/TWO-YEAR-ONLY.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 148,WUR,,R107/C107/W126,380 SE/SEL/SEC/SL/SLC \u00b7 450 SE/SEL/SLC \u00b7 500 SEC/SEL,M116/M117,1980-1984,Euro,Double,Yes,No,No,0 438 140 068,,German-market equivalent of 068.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 151,WUR,1160700062,W126/R107,380 SE/SEL/SEC \u00b7 500 SE/SEL/SEC \u00b7 500 SL,M116.962/963 \u00b7 M117.962/963,1979-1985,,Double,Yes,No,No,,,Packaged with 0 438 100 111 fuel distributor in factory CIS kits for W126/R107 V8.,[mengenteiler 0438100111 set](https://www.mengenteiler.eu/?language=eng&nr=e6e591bbf244e9dd5943832241451402&seite=kmt_details&artikel_id=30204172&mobilweb=nein)\n0 438 140 155,WUR,,R107/W126,380 SE/SEL/SL \u00b7 500 SEC/SEL,M116/M117,1985,,Double,Yes,No,Yes,,0 438 140 156,LATE 85-only V8 variant. German control pressure regulator.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 156,WUR,,R107/W126,380 SE/SEL/SL \u00b7 500 SEC/SEL,M116/M117,1985,,Double,Yes,No,Yes,0 438 140 155,,Paired/cross with 155; also late-85.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 100 011,FD,,W116/W123/R107/C107,280/280E/280S/280SE/280CE/280SLC,M110,mid-70s to 1985,Euro/US,\u2014,,,No,,,6-cyl M110 K-Jetronic fuel distributor \u2014 alloy body.,[mengenteiler 0438100011 listing](https://en.mengenteiler.eu/m/index.php?language=eng&seite=modellspez_suche&KHerNr=74&KHerBez=MERCEDES-BENZ)\n0 438 100 012,FD,,W116/W126/R107/W100,M116/M117/M100 applications,M116/M117/M100,late 70s-early 80s,,\u2014,,,No,,,Early V8 K-Jet FD covering multiple chassis.,[mengenteiler 0438100012](https://www.mengenteiler.eu/)\n0 438 100 068,FD,,W116/W126/R107,M116/M117/M100,M116/M117,late 70s-85,,\u2014,,,No,,,Alloy V8 K-Jet fuel distributor; appears across W116/W126/R107.,[mengenteiler 0438100068](https://www.mengenteiler.eu/)\n0 438 100 069,FD,,W123/W116/R107/C107/W460,280 6-cyl,M110,mid-70s to 85,,\u2014,,,No,,,6-cyl M110 alloy FD. Uses 6-cyl alloy adjustable repair kit.,[K-Jet.biz 4cyl kit (shares family)](https://k-jet.biz/product/0-438-100-116-4cyl-cast-iron-adjustable-type-fuel-distributor-repair-kit/) \u00b7 [mengenteiler](https://www.mengenteiler.eu/)\n0 438 100 071,FD,,W460/W461,230 GE (M102 G-Class K-Jet),M102.981/.998,1979-1980s,,\u2014,,,No,,,G-Wagen 4-cyl K-Jet fuel distributor.,[german-spob 0438100071](https://www.german-spob.com/)\n0 438 100 089,FD,A 000 074 03 13,W126/R107,S-Class/SL V8 K-Jet,M116/M117,early 80s,,\u2014,,,No,,,V8 K-Jet fuel distributor.,[AUTODOC 0438100089](https://www.autodoc.parts/bosch/1155465)\n0 438 100 111,FD,A 000 074 13 13 / A 000 074 13 13 80,W126/C126/R107,380 SE/SEL/SEC \u00b7 500 SE/SEL/SEC \u00b7 380 SL/500 SL,M116.962/963 \u00b7 M117.960/961/962/963,1980-1985,,\u2014,,,No,,0 438 100 112,The classic 8-cyl alloy K-Jet FD for R107/W126 V8s. Often supplied as complete kit with WUR 0438140151.,[mengenteiler set](https://www.mengenteiler.eu/?language=eng&nr=e6e591bbf244e9dd5943832241451402&seite=kmt_details&artikel_id=30204172&mobilweb=nein) \u00b7 [cis-jetronic repair kit](https://cis-jetronic.com/index.php?rt=product%2Fproduct&product_id=249)\n0 438 100 112,FD,,W126/C126/R107,same as 111,M116/M117,1984-1985,,\u2014,,,No,0 438 100 111,,Late supersession of 111 \u2014 interchangeable.,[mengenteiler](https://www.mengenteiler.eu/)\n0 438 101 001,FD,A 000 074 14 13,W201/W124/W460,190 E 2.0 \u00b7 200 E/CE/TE \u00b7 230 GE,M102.961/962/963/987,1982-1993,,\u2014,,,No,,,4-cyl KE-Jet alloy FD. Bosch exchange 0-986-438-201 / F026-TX2-045.,[AUTODOC 0438101001](https://www.autodoc.parts/bosch/690011) \u00b7 [cis-jetronic repair kit 258](https://cis-jetronic.com/index.php?rt=product%2Fproduct&product_id=258)\n0 438 101 009,FD,A 000 074 16 13,W201,190 E 2.3-16 Cosworth,M102.983,04/1984-01/1987,,\u2014,,,Yes,,0 438 101 010,Cosworth 16V-specific FD. ONE-RUN-ONLY (~3 years). Close-relative 010.,[mengenteiler 0438101009](https://www.mengenteiler.eu/?language=eng&nr=0784b841b7af830a3537295e5809491b&seite=kmt_details&artikel_id=30204175)\n0 438 101 010,FD,,W201,190 E 2.3-16 (later Cosworth),M102.983,1987-1988,,\u2014,,,Yes,0 438 101 009,,Late 16V variant; paired with AFM 0438121022 and EHA.,[mengenteiler 0438101010](https://www.mengenteiler.eu/)\n0 438 101 011,FD,A 000 074 19 13,,,,,,\u2014,,,No,,0 438 101 012,KE-Jet FD. Bosch exchange 0 986 438 211 / F 026 TX2 044.,[jetronic.es 0438101011/012](https://www.jetronic.es/index.php?route=product%2Fproduct&product_id=66)\n0 438 101 012,FD,A 000 074 19 13,,,,,,\u2014,,,No,0 438 101 011,,Paired/late variant of 011.,[jetronic.es](https://www.jetronic.es/index.php?route=product%2Fproduct&product_id=66)\n0 438 101 026,FD,,W201,190 E 2.3 (8V) \u00b7 230 GE,M102,1984-1993,,\u2014,,,No,,,Common 4-cyl 8V KE-Jet FD. Also cross-referenced with 0438101004. Uses AFM 0438121043.,[OZ's Garage 0438101026](https://ozsgarage.com/product/mercedes-benz-190e-2-3-bosch-fuel-distributor-0438101026-0-438-101-026-oem/) \u00b7 [K-Jet.biz 4cyl alloy kit](https://k-jet.biz/product/0-438-101-026-4-cylinder-alloy-ke-jetronic-fuel-distributor-rebuild-kit/)\n0 438 101 004,FD,,W201,190 E 2.3 (late),M102,1986-1993,,\u2014,,,No,0 438 101 026,,Interchanges with 026.,[OZ's Garage 0438101004](https://ozsgarage.com/product/1986-1993-mercedes-benz-190e-2-3-bosch-fuel-distributor-oem-0438101004/)\n0 438 101 016,FD,,W126/R107/W463,M117.968 / M119.960 (late 560/V8),M117.968 \u00b7 M119.960,late 80s-early 90s,,\u2014,,,No,,,Late V8 KE-Jet FD. Used with AFM 0438121080 or 0438121037.,[mengenteiler 0438101016](https://www.mengenteiler.eu/)\n0 438 101 018,FD,,W126/R107/W463,M116/M117 KE-Jet,M116/M117,mid-80s-early 90s,,\u2014,,,No,,,KE-Jet V8 FD family.,[mengenteiler 0438101018](https://www.mengenteiler.eu/)\n";
+    const blob = new Blob([t], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "bosch-wur-fd-mercedes.csv";
+    a.click(); }());
+}
+
+/* --------------------------- init -------------------------------- */
+async function init() {
+  const text = "bosch_pn,type,mb_oem,mb_chassis,mb_models,engine_code,years,market,diaphragm_type,vacuum,inverted_valve,one_year_only,supersedes,superseded_by,notes,sources\n0 438 140 010,WUR,,W123/W116/R107/C107,280 CE/280 SLC/450 SE/450 SEL/450 SL/450 SLC (Euro),M110/M117,1977-1978,Euro,Double,Yes,No,No,,,Euro-spec; uses double-diaphragm vacuum-enrichment design,[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [K-Jet.biz kit list](https://k-jet.biz/product/0-438-140-015-warm-up-regulator-single-vacuum-diaphragm-repair-kit/)\n0 438 140 015,WUR,000 070 05 62 / A0000700562,R107/C107/W116,450 SE/SEL/SL/SLC,M117,1976-1978,US,Single,Yes,No,No,,,Single-diaphragm vacuum WUR. Early intake-port location (large port on top). Commonly rebuilt with k-jet.biz single-diaphragm kit.,[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [K-Jet.biz](https://k-jet.biz/product/0-438-140-015-warm-up-regulator-single-vacuum-diaphragm-repair-kit/) \u00b7 [MB YouTube WUR evolution](https://www.youtube.com/watch?v=CA-FABwUK5c)\n0 438 140 030,WUR,000 070 10 62,W123,280E (6-cyl M110),M110,1977-1979,US,Single,Yes,No,No,,,USA 280E M110 DOHC. Single-diaphragm vacuum type.,[FuelInjectionProducts](https://www.fuelinjectionproducts.com/products/mercedes-new-warm-up-regulator-bosch-0438140030) \u00b7 [SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 031,WUR,,W123,280/280E variants,M110,varies,,Single,Yes,No,No,,,Variant of 030 run; verify against engine tag before fitting.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 056,WUR,,R107/W126/W116,350/380/450/500 (various US),M116/M117,1976-1985,US,Double,Yes,No,No,,,Long-run US V8 number covering many chassis/years. Double-diaphragm design.,[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [K-Jet.biz 056 exchange](https://k-jet.biz/product/0438140056-exchange-remanufactured-warm-up-regulator-price-inc-150-00-surcharge/)\n0 438 140 057,WUR,0000701662,W123/W116/R107/C107/W126/W460,280CE/280SLC/280SE/280SEL and G-Wagen Euro,M110,1976-1985,Euro,Double,Yes,No,No,,,Euro 6-cyl CIS. Wide compatibility across W116/W123/R107/W126/W460 Puch G.,[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [Classic Parts Finder](https://www.classic-parts-finder.com/en/car-parts/mercedes-benz/w123/engine/control-pressure-regulator-wur-m110-motor_6723)\n0 438 140 061,WUR,,R107/C107/W126,380 SE/SEL/SEC/SL \u00b7 450 SE/SEL/SEC/SL (Euro),M116/M117,1979-1985,Euro,Double,Yes,No,No,,0 438 140 145,Cross-referenced with 145 (German equivalent).,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 065,WUR,102 070 01 62 / 000 070 20 62,W123/W460/C123/S123,230E/230CE/230TE/G230 (4-cyl),M102,1980-1985,US,Single,No,No,No,,,M102 4-cyl. No vacuum input on this engine application. Also fits Puch G.,[AUTODOC](https://www.auto-doc.ie/bosch/682085) \u00b7 [MB YouTube signs of bad WUR](https://www.youtube.com/watch?v=6bjb_PveRXo)\n0 438 140 067,WUR,,W123/C123,280E/280CE (DOHC M110),M110,1980-1981,US,Double,Yes,No,Yes,,0 438 140 147,ONE/TWO-YEAR-ONLY fitment 80-81 only. German equivalent is 147. Often NLA new.,[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [EPS Parts](https://epsparts.com/products/1980-81-mercedes-280e-280ce-fuel-injection-warm-up-regulator-bosch-0-438-140-067)\n0 438 140 068,WUR,,R107/C107/W126,380 SE/SEL/SEC/SL/SLC \u00b7 450 SE/SEL/SLC \u00b7 500 SEC/SEL,M116/M117,1980-1984,US,Double,Yes,No,No,,0 438 140 148,German equivalent is 148. V8 US spec.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 101,WUR,,R107/W126,380 SE/SEL/SL \u00b7 500 (same) Euro,M116/M117,1980-1985,Euro,Double,Yes,No,No,,,Euro V8 application.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 103,WUR,110-070-00-62,W123/W116/R107,280E/280CE/280S/280SE/280SEL/280SL,M110,1976-1985,US,Double,Yes,No,No,,,\"Last-of-run M110 WUR \u2014 \"\"final version\"\". Vacuum port on back of intake (firewall side). Check that vacuum line is actually connected \u2014 commonly plugged.\",[SpecialtAuto](https://www.specialtauto.com/node/19) \u00b7 [PeachParts thread](http://www.peachparts.com/shopforum/tech-help/265952-problem-m110-988-warm-up-regulator-wur.html)\n0 438 140 145,WUR,116 070 02 62 / 117 070 00 62 / 000 070 19 62,R107/C107/W126,380 SE/SEL/SEC/SL \u00b7 450 SE/SEL/SEC/SL (Euro),M116/M117,1979-1985,Euro,Double,Yes,No,No,0 438 140 061,,German-market equivalent of 061.,[AUTODOC](https://www.autodoc.parts/bosch/682129) \u00b7 [SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 147,WUR,,W123/C123,280E/280CE (DOHC),M110,1980-1981,Euro,Double,Yes,No,Yes,,,German-market equivalent of 067. ONE/TWO-YEAR-ONLY.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 148,WUR,,R107/C107/W126,380 SE/SEL/SEC/SL/SLC \u00b7 450 SE/SEL/SLC \u00b7 500 SEC/SEL,M116/M117,1980-1984,Euro,Double,Yes,No,No,0 438 140 068,,German-market equivalent of 068.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 151,WUR,1160700062,W126/R107,380 SE/SEL/SEC \u00b7 500 SE/SEL/SEC \u00b7 500 SL,M116.962/963 \u00b7 M117.962/963,1979-1985,,Double,Yes,No,No,,,Packaged with 0 438 100 111 fuel distributor in factory CIS kits for W126/R107 V8.,[mengenteiler 0438100111 set](https://www.mengenteiler.eu/?language=eng&nr=e6e591bbf244e9dd5943832241451402&seite=kmt_details&artikel_id=30204172&mobilweb=nein)\n0 438 140 155,WUR,,R107/W126,380 SE/SEL/SL \u00b7 500 SEC/SEL,M116/M117,1985,,Double,Yes,No,Yes,,0 438 140 156,LATE 85-only V8 variant. German control pressure regulator.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 140 156,WUR,,R107/W126,380 SE/SEL/SL \u00b7 500 SEC/SEL,M116/M117,1985,,Double,Yes,No,Yes,0 438 140 155,,Paired/cross with 155; also late-85.,[SpecialtAuto](https://www.specialtauto.com/node/19)\n0 438 100 011,FD,,W116/W123/R107/C107,280/280E/280S/280SE/280CE/280SLC,M110,mid-70s to 1985,Euro/US,\u2014,,,No,,,6-cyl M110 K-Jetronic fuel distributor \u2014 alloy body.,[mengenteiler 0438100011 listing](https://en.mengenteiler.eu/m/index.php?language=eng&seite=modellspez_suche&KHerNr=74&KHerBez=MERCEDES-BENZ)\n0 438 100 012,FD,,W116/W126/R107/W100,M116/M117/M100 applications,M116/M117/M100,late 70s-early 80s,,\u2014,,,No,,,Early V8 K-Jet FD covering multiple chassis.,[mengenteiler 0438100012](https://www.mengenteiler.eu/)\n0 438 100 068,FD,,W116/W126/R107,M116/M117/M100,M116/M117,late 70s-85,,\u2014,,,No,,,Alloy V8 K-Jet fuel distributor; appears across W116/W126/R107.,[mengenteiler 0438100068](https://www.mengenteiler.eu/)\n0 438 100 069,FD,,W123/W116/R107/C107/W460,280 6-cyl,M110,mid-70s to 85,,\u2014,,,No,,,6-cyl M110 alloy FD. Uses 6-cyl alloy adjustable repair kit.,[K-Jet.biz 4cyl kit (shares family)](https://k-jet.biz/product/0-438-100-116-4cyl-cast-iron-adjustable-type-fuel-distributor-repair-kit/) \u00b7 [mengenteiler](https://www.mengenteiler.eu/)\n0 438 100 071,FD,,W460/W461,230 GE (M102 G-Class K-Jet),M102.981/.998,1979-1980s,,\u2014,,,No,,,G-Wagen 4-cyl K-Jet fuel distributor.,[german-spob 0438100071](https://www.german-spob.com/)\n0 438 100 089,FD,A 000 074 03 13,W126/R107,S-Class/SL V8 K-Jet,M116/M117,early 80s,,\u2014,,,No,,,V8 K-Jet fuel distributor.,[AUTODOC 0438100089](https://www.autodoc.parts/bosch/1155465)\n0 438 100 111,FD,A 000 074 13 13 / A 000 074 13 13 80,W126/C126/R107,380 SE/SEL/SEC \u00b7 500 SE/SEL/SEC \u00b7 380 SL/500 SL,M116.962/963 \u00b7 M117.960/961/962/963,1980-1985,,\u2014,,,No,,0 438 100 112,The classic 8-cyl alloy K-Jet FD for R107/W126 V8s. Often supplied as complete kit with WUR 0438140151.,[mengenteiler set](https://www.mengenteiler.eu/?language=eng&nr=e6e591bbf244e9dd5943832241451402&seite=kmt_details&artikel_id=30204172&mobilweb=nein) \u00b7 [cis-jetronic repair kit](https://cis-jetronic.com/index.php?rt=product%2Fproduct&product_id=249)\n0 438 100 112,FD,,W126/C126/R107,same as 111,M116/M117,1984-1985,,\u2014,,,No,0 438 100 111,,Late supersession of 111 \u2014 interchangeable.,[mengenteiler](https://www.mengenteiler.eu/)\n0 438 101 001,FD,A 000 074 14 13,W201/W124/W460,190 E 2.0 \u00b7 200 E/CE/TE \u00b7 230 GE,M102.961/962/963/987,1982-1993,,\u2014,,,No,,,4-cyl KE-Jet alloy FD. Bosch exchange 0-986-438-201 / F026-TX2-045.,[AUTODOC 0438101001](https://www.autodoc.parts/bosch/690011) \u00b7 [cis-jetronic repair kit 258](https://cis-jetronic.com/index.php?rt=product%2Fproduct&product_id=258)\n0 438 101 009,FD,A 000 074 16 13,W201,190 E 2.3-16 Cosworth,M102.983,04/1984-01/1987,,\u2014,,,Yes,,0 438 101 010,Cosworth 16V-specific FD. ONE-RUN-ONLY (~3 years). Close-relative 010.,[mengenteiler 0438101009](https://www.mengenteiler.eu/?language=eng&nr=0784b841b7af830a3537295e5809491b&seite=kmt_details&artikel_id=30204175)\n0 438 101 010,FD,,W201,190 E 2.3-16 (later Cosworth),M102.983,1987-1988,,\u2014,,,Yes,0 438 101 009,,Late 16V variant; paired with AFM 0438121022 and EHA.,[mengenteiler 0438101010](https://www.mengenteiler.eu/)\n0 438 101 011,FD,A 000 074 19 13,,,,,,\u2014,,,No,,0 438 101 012,KE-Jet FD. Bosch exchange 0 986 438 211 / F 026 TX2 044.,[jetronic.es 0438101011/012](https://www.jetronic.es/index.php?route=product%2Fproduct&product_id=66)\n0 438 101 012,FD,A 000 074 19 13,,,,,,\u2014,,,No,0 438 101 011,,Paired/late variant of 011.,[jetronic.es](https://www.jetronic.es/index.php?route=product%2Fproduct&product_id=66)\n0 438 101 026,FD,,W201,190 E 2.3 (8V) \u00b7 230 GE,M102,1984-1993,,\u2014,,,No,,,Common 4-cyl 8V KE-Jet FD. Also cross-referenced with 0438101004. Uses AFM 0438121043.,[OZ's Garage 0438101026](https://ozsgarage.com/product/mercedes-benz-190e-2-3-bosch-fuel-distributor-0438101026-0-438-101-026-oem/) \u00b7 [K-Jet.biz 4cyl alloy kit](https://k-jet.biz/product/0-438-101-026-4-cylinder-alloy-ke-jetronic-fuel-distributor-rebuild-kit/)\n0 438 101 004,FD,,W201,190 E 2.3 (late),M102,1986-1993,,\u2014,,,No,0 438 101 026,,Interchanges with 026.,[OZ's Garage 0438101004](https://ozsgarage.com/product/1986-1993-mercedes-benz-190e-2-3-bosch-fuel-distributor-oem-0438101004/)\n0 438 101 016,FD,,W126/R107/W463,M117.968 / M119.960 (late 560/V8),M117.968 \u00b7 M119.960,late 80s-early 90s,,\u2014,,,No,,,Late V8 KE-Jet FD. Used with AFM 0438121080 or 0438121037.,[mengenteiler 0438101016](https://www.mengenteiler.eu/)\n0 438 101 018,FD,,W126/R107/W463,M116/M117 KE-Jet,M116/M117,mid-80s-early 90s,,\u2014,,,No,,,KE-Jet V8 FD family.,[mengenteiler 0438101018](https://www.mengenteiler.eu/)\n";
+  state.rows = parseCSV(text).filter((r) => r.bosch_pn); // drop commentary rows w/o PN
+
+  populateFilter("#fEngine", "engine_code");
+  populateFilter("#fChassis", "mb_chassis");
+  setupSort();
+
+  ["input", "change"].forEach((ev) => {
+    $("#q").addEventListener(ev, render);
+    $("#fType").addEventListener(ev, render);
+    $("#fEngine").addEventListener(ev, render);
+    $("#fChassis").addEventListener(ev, render);
+  });
+
+  $("#clear").addEventListener("click", () => {
+    $("#q").value = "";
+    $("#fType").value = "";
+    $("#fEngine").value = "";
+    $("#fChassis").value = "";
+    state.openRows.clear();
+    render();
+  });
+
+  $("#downloadCsv").addEventListener("click", downloadCurrentCsv);
+  $("#printBtn").addEventListener("click", () => window.print());
+
+  // keyboard: "/" to focus search
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "/" && document.activeElement !== $("#q")) {
+      e.preventDefault(); $("#q").focus(); $("#q").select();
+    }
+    if (e.key === "Escape" && document.activeElement === $("#q")) {
+      $("#q").value = ""; render();
+    }
+  });
+
+  render();
+}
+
+init();
+
+</script>
+</body>
+</html>
